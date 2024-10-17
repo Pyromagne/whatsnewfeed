@@ -1,13 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* * {
+  outline: 1px solid rgba(0, 0, 0, 0.3);
+} */
+
+/* * {
+  outline: 1px solid white;
+} */
+
+.cabin {
+  font-family: "Cabin", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+.libre-baskerville {
+  font-family: "Libre Baskerville", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+* {
+  color: #f0f8ff;
+  font-family: cabin;
+}
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  @apply pattern;
+  background-color: #191414;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.pattern {
+  background-image: linear-gradient(#393939 1px, transparent 1px), linear-gradient(to right, #393939 1px, transparent 1px);
+  background-size: 128px 128px;
 }
