@@ -134,15 +134,31 @@ const App = () => {
   }, [accessToken]);
 
   return (
-    <div>
-      <div className='relative w-full h-[256px] bg-[#1DB954] flex justify-center mb-20'>
-        <p className='libre-baskerville font-bold text-[96px] text-center text-[#191414] h-fit mt-6'>whatsnewfeed</p>
+    <div className='w-full flex flex-col'>
+      <div className='relative w-full h-[256px] bg-[#1DB954] flex justify-center mb-20 shadow-xl'>
+        <div className='p-2'>
+          <p className='libre-baskerville font-bold md:text-[96px] text-[48px] text-center text-[#191414] h-fit md:mt-6 mt-10'>whatsnewfeed</p>
+          <p className='text-center md:text-xl text-base text-wrap'>View your latest releases from artists you follow with a larger cap.</p>
+        </div>
         {!accessToken
-          ? <button className='absolute -bottom-10 rounded-full bg-[#191414] py-4 px-8 text-5xl border border-[#393939] w-[512px] ' onClick={authenticateUser}>Login with Spotify</button>
-          : <button className='absolute -bottom-10 rounded-full bg-[#191414] py-4 px-8 text-5xl border border-[#393939] w-[512px] ' onClick={fetchRecentReleases} disabled={loading ? true : false}>Search</button>
+          ? <button
+            className={`
+              absolute md:-bottom-10 -bottom-8 rounded-full bg-[#191414] md:py-4 py-2 px-8 text-2xl border border-[#393939]  duration-200
+              hover:shadow-xl hover:scale-105
+            `} onClick={authenticateUser}
+          >
+            Login with Spotify
+          </button>
+          : <button
+            className='absolute md:-bottom-10 -bottom-8 rounded-full bg-[#191414] md:py-4 py-2 px-8 text-2xl border border-[#393939]'
+            onClick={fetchRecentReleases} disabled={loading ? true : false}
+          >
+            Search
+          </button>
         }
       </div>
-      <div className='flex flex-col items-center w-full'>
+
+      <div className='flex flex-col items-center w-full h-[512px]'>
         <div className={`${loading ? 'mt-20' : 'm-0'}`}>
           {loading && <l-grid size="96" speed="1.5" color="white" />}
         </div>
@@ -158,7 +174,7 @@ const App = () => {
                   <p>
                     {release.name} by {release.artists[0].name} (Released on {release.release_date})
                   </p>
-                  <a href={release.external_urls.spotify} target='_blank'>
+                  <a href={release.external_urls.spotify} rel="noopener noreferrer" target='_blank'>
                     {release.name}
                   </a>
                 </div>
@@ -166,6 +182,19 @@ const App = () => {
             ))}
           </div>
         )}
+      </div>
+
+      <div className='flex flex-col w-full h-20 bg-[#191414] border-t border-t-[#393939] shadow-xl overflow-hidden px-4 py-2'>
+        <div className='flex'>
+          <div className='w-fit'>
+            <p className='text-2xl font-semibold'>whatsnewfeed</p>
+          </div>
+          <div className='ml-auto flex flex-col items-end'>
+            <p>Created by <a href="https://github.com/Pyromagne" className='font-semibold hover:text-[#1DB954]'>Pyromagne</a></p>
+            <a href="https://github.com/Pyromagne/whatsnewfeed" className='font-semibold hover:text-[#1DB954]'>Source Code</a>
+          </div>
+        </div>
+        <p className='mt-auto text-sm'>Powered by the <a href="https://developer.spotify.com/" className='text-[#1DB954]'>Spotify API</a>, served by <a href="https://render.com/" className='text-[#1DB954]'>Render</a></p>
       </div>
     </div>
   );
