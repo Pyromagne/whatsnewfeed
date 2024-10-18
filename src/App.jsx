@@ -13,11 +13,6 @@ const App = () => {
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const authenticateUser = () => {
-    const authUrl = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=${SCOPES}&response_type=token&show_dialog=true`;
-    window.location.href = authUrl;
-  };
-
   useEffect(() => {
     const hash = window.location.hash;
 
@@ -29,6 +24,11 @@ const App = () => {
       window.location.hash = '';
     }
   }, []);
+
+  const authenticateUser = () => {
+    const authUrl = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=${SCOPES}&response_type=token&show_dialog=true`;
+    window.location.href = authUrl;
+  };
 
   const fetchFollowedArtists = async () => {
     if (!accessToken) return;
@@ -50,60 +50,46 @@ const App = () => {
 
       const data = await response.json();
 
-      // Log the current state
-      console.log(`Fetched artists: ${data.artists.items.length}, Next Cursor: ${data.artists.cursors.after}`);
-
       if (data.artists && data.artists.items) {
         allArtists.push(...data.artists.items);
 
-        // Check if there is a next cursor
         if (data.artists.cursors && data.artists.cursors.after) {
-          nextCursor = data.artists.cursors.after; // Update to the next cursor
+          nextCursor = data.artists.cursors.after;
         } else {
-          moreDataAvailable = false; // No more data to fetch
+          moreDataAvailable = false;
         }
       } else {
         console.error('Unexpected response structure:', data);
-        moreDataAvailable = false; // Exit loop if the structure is not as expected
+        moreDataAvailable = false;
       }
     }
 
     return allArtists;
   };
 
+  const fetchFirstFiveReleasesForArtist = async (artistId) => {
+    const url = `https://api.spotify.com/v1/artists/${artistId}/albums?include_groups=album,single&market=US&limit=10`;
 
+    const artistResponse = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-  const fetchAllReleasesForArtist = async (artistId) => {
-    let allReleases = [];
-    let nextUrl = null;  // URL for the next page of results
-    let moreDataAvailable = true;
+    const artistAlbums = await artistResponse.json();
 
-    while (moreDataAvailable) {
-      // Use the nextUrl for pagination if it exists; otherwise, build the initial URL
-      const url = nextUrl
-        ? nextUrl
-        : `https://api.spotify.com/v1/artists/${artistId}/albums?include_groups=album,single&market=US&limit=50`;
+    const currentDate = new Date();
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(currentDate.getMonth() - 3);
 
-      const artistResponse = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+    const recentAlbums = artistAlbums.items.filter(album => {
 
-      const artistAlbums = await artistResponse.json();
+      const releaseDate = new Date(album.release_date);
 
-      const recent = artistAlbums.items.filter(release => new Date(release.release_date) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
-      allReleases.push(...recent);
+      return !isNaN(releaseDate) && releaseDate >= threeMonthsAgo;
+    });
 
-      // Check if there is a next URL for more items to fetch
-      if (artistAlbums.next) {
-        nextUrl = artistAlbums.next;  // Update to the next URL
-      } else {
-        moreDataAvailable = false; // No more data to fetch
-      }
-    }
-
-    return allReleases;
+    return recentAlbums;
   };
 
 
@@ -112,26 +98,17 @@ const App = () => {
     const artists = await fetchFollowedArtists();
     const allReleases = [];
 
-    // Fetch releases for each followed artist
     for (const artist of artists) {
-      const releases = await fetchAllReleasesForArtist(artist.id);
+      const releases = await fetchFirstFiveReleasesForArtist(artist.id);
       allReleases.push(...releases);
     }
 
-    // Sort releases by release_date from most recent to least recent
     allReleases.sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
 
     setLoading(false);
     setRecentReleases(allReleases);
     setSearched(true);
   };
-
-
-  useEffect(() => {
-    if (accessToken) {
-      /* fetchRecentReleases(); */
-    }
-  }, [accessToken]);
 
   return (
     <div className='w-full flex flex-col'>
@@ -158,25 +135,25 @@ const App = () => {
         }
       </div>
 
-      <div className='flex flex-col items-center w-full h-[512px]'>
+      <div className='flex flex-col items-center w-full min-h-[512px]'>
         <div className={`${loading ? 'mt-20' : 'm-0'}`}>
           {loading && <l-grid size="96" speed="1.5" color="white" />}
         </div>
         {recentReleases.length === 0 && accessToken && searched ? (
           <p className='text-center text-3xl'>No recent releases found.</p>
         ) : (
-          <div className='flex flex-col items-center'>
+          <div className='flex flex-col items-center w-3/4'>
             {recentReleases.map(release => (
-              <div key={release.id} className='flex w-3/4 p-4 m-4 border border-[#f0f8ff] rounded-lg bg-[#191414]'>
-                <img src={release.images[0].url} alt={release.name} className='w-20 rounded-md' />
+              <div key={release.id} className='flex gap-4 w-3/4 p-4 m-4 border border-[#f0f8ff] rounded-lg bg-[#191414] h-32'>
+                <div className='w-24 bg-cover bg-no-repeat rounded-md' style={{ backgroundImage: `url(${release.images[0].url})` }}>
+                </div>
                 <div className='flex flex-col'>
                   <p className='capitalize'>{release.album_type}</p>
-                  <p>
-                    {release.name} by {release.artists[0].name} (Released on {release.release_date})
-                  </p>
                   <a href={release.external_urls.spotify} rel="noopener noreferrer" target='_blank'>
                     {release.name}
                   </a>
+                  <a href={release.artists[0].external_urls.spotify} rel="noopener noreferrer" target='_blank'>{release.artists[0].name}</a>
+                  <p>{release.release_date}</p>
                 </div>
               </div>
             ))}

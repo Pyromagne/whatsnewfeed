@@ -32,6 +32,7 @@
 
 body {
   @apply pattern;
+  background-attachment: fixed;
   background-color: #191414;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
