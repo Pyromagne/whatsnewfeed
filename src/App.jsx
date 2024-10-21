@@ -127,7 +127,9 @@ const App = () => {
             Login with Spotify
           </button>
           : <button
-            className='absolute md:-bottom-10 -bottom-8 rounded-full bg-[#191414] md:py-4 py-2 px-8 text-2xl border border-[#393939]'
+            className={`absolute md:-bottom-10 -bottom-8 rounded-full bg-[#191414] md:py-4 py-2 px-8 text-2xl border border-[#393939] duration-200
+              hover:shadow-xl hover:scale-105
+            `}
             onClick={fetchRecentReleases} disabled={loading ? true : false}
           >
             Search
