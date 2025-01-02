@@ -36,6 +36,7 @@ const App = () => {
       const token = hash.split('&')[0].split('=')[1];
       if (token) {
         setToken(token);
+        alert(getToken());
       }
       window.location.hash = '';
     }
