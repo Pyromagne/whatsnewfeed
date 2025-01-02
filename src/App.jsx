@@ -22,6 +22,7 @@ const App = () => {
 
   useEffect(() => {
     if (getToken()) {
+      alert('test');
       fetchUser()
         .then((data) => setUser(data))
         .catch((err) => alert(err));
