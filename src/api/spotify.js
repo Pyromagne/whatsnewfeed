@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const CLIENT_ID = process.env.REACT_APP_CLIENT_ID2;
+const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
 const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI;
 const SCOPES = process.env.REACT_APP_SCOPES;
 
