@@ -21,26 +21,24 @@ const App = () => {
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   useEffect(() => {
-    if (getToken()) {
-      alert('test');
+    const hash = window.location.hash;
+  
+    if (hash) {
+      const token = hash.split('&')[0].split('=')[1];
+      if (token) {
+        setToken(token);
+        fetchUser()
+          .then((data) => setUser(data))
+          .catch((err) => alert(err));
+      }
+      window.location.hash = '';
+    } else if (getToken()) {
       fetchUser()
         .then((data) => setUser(data))
         .catch((err) => alert(err));
     }
   }, []);
-
-  useEffect(() => {
-    const hash = window.location.hash;
-
-    if (hash) {
-      const token = hash.split('&')[0].split('=')[1];
-      if (token) {
-        setToken(token);
-        alert(getToken());
-      }
-      window.location.hash = '';
-    }
-  }, []);
+  
 
   const callback = (data) => {
     setRecentReleases(data);
