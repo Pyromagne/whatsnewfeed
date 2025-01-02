@@ -26,7 +26,7 @@ const App = () => {
         .then((data) => setUser(data))
         .catch((err) => alert(err));
     }
-  }, [getToken()]);
+  }, []);
 
   useEffect(() => {
     const hash = window.location.hash;
