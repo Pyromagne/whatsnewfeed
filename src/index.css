@@ -10,6 +10,9 @@
   outline: 1px solid white;
 } */
 
+html, body, #root, .App {
+  height: 100%;
+}
 .cabin {
   font-family: "Cabin", serif;
   font-optical-sizing: auto;
@@ -31,13 +34,12 @@
 }
 
 body {
-  @apply pattern;
   background-color: #191414;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 .pattern {
-  background-image: linear-gradient(#393939 1px, transparent 1px), linear-gradient(to right, #393939 1px, transparent 1px);
+  background-image: linear-gradient(rgb(57, 57, 57, .35) 1px, transparent 1px), linear-gradient(to right, rgb(57, 57, 57, .35) 1px, transparent 1px);
   background-size: 128px 128px;
 }

@@ -1,17 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { grid } from 'ldrs'
 import pLimit from 'p-limit';
+import { TiThMenuOutline, TiThList  } from "react-icons/ti";
+
 
 import fetchWithRetry from './utils/fetchWithRetry';
 import fetchAllFollowedArtists from './utils/fetchAllFollowedArtist';
 import fetchArtistDiscography from './utils/fetchArtistDiscography';
 
+import Card from './components/Card';
+import Grid from './components/Grid';
+
+
+import { useStateContext } from './context/stateContext';
 import { fetchUser, authenticateUser, setToken, getToken } from './api/spotify';
 
 grid.register();
 
 const App = () => {
-  const [recentReleases, setRecentReleases] = useState([]);
+  const { isGrid, setIsGrid, recentReleases, setRecentReleases } = useStateContext();
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
@@ -93,16 +100,20 @@ const App = () => {
   return (
     <div className='w-full flex flex-col'>
 
-      <div className='relative w-full h-[256px] bg-[#1DB954] flex justify-center mb-20 shadow-xl'>
+      <div className={`relative w-full h-[256px] bg-[#1DB954] flex justify-center shadow-xl`}>
         <div className='p-2'>
-          <p className='libre-baskerville font-bold md:text-[96px] text-[38px] text-center text-[#191414] h-fit md:mt-6 mt-10'>whatsnewfeed</p>
-          <p className='text-center md:text-xl text-base text-wrap'>View your latest releases from artists you followed in spotify with a larger cap.</p>
+          <p className='libre-baskerville font-bold md:text-7xl text-[38px] text-center text-[#191414] h-fit md:mt-20 mt-16'>whats<span className='libre-baskerville'>new</span>feed</p>
+          <p className='text-center md:text-lg text-sm text-wrap'>View your latest releases from artists you followed in spotify with a larger cap.</p>
         </div>
+
+        <button className={`absolute top-4 left-4 ${getToken() ? 'block' : 'hidden'}`} onClick={()=>setIsGrid(!isGrid)}>
+          {isGrid ? <TiThMenuOutline title='Card' size={20} /> : <TiThList title='List' size={20} />}
+        </button>
 
         {!getToken()
           ? <button className={`
-              absolute md:-bottom-10 -bottom-8 rounded-full bg-[#191414] md:py-4 py-2 px-8 text-2xl border border-[#393939]  duration-200
-              hover:shadow-xl hover:scale-105
+              absolute md:-bottom-8 -bottom-6 rounded-full bg-[#191414] md:py-4 py-2 px-8 text-xl border border-[#393939] hover:border-[#1DB954]  duration-200
+              hover:shadow-xl hover:text-[#1DB954]
             `} onClick={authenticateUser}
           >
             Log in
@@ -110,15 +121,15 @@ const App = () => {
           :
           <div className={`
               absolute flex gap-4 -bottom-8 shadow-lg rounded-full border border-[#393939] bg-[#191414]
-              md:ml-8 md:-bottom-10 md:left-0
+              md:ml-6 md:-bottom-8 md:left-0
           `}>
             <div className={`inline-flex gap-2 items-center p-2 ${getToken() ? 'block' : 'hidden'}`}>
-              <img src={user?.images[0].url} alt="user_profile" className='w-12 h-12 rounded-full' />
-              <p className='mr-2 text-xl'>{user?.display_name}</p>
+              <img src={user?.images[0].url} alt="user_profile" className='w-12 h-12 rounded-full object-cover  ' />
+              <p className='mr-2'>{user?.display_name}</p>
             </div>
 
             <button
-              className={`px-8 text-xl duration-200 hover:scale-110 ${loading ? '' : ''}`}
+              className={`px-8 duration-200 hover:scale-110 ${loading ? '' : ''}`}
               onClick={()=>fetchRecentReleases(callback)} disabled={loading ? true : false}
             >
               Search
@@ -127,7 +138,7 @@ const App = () => {
         }
       </div>
 
-      <div className=' flex flex-col items-center w-full min-h-screen'>
+      <main className=' flex flex-col items-center w-full min-h-svh pattern'>
         <div className={`flex flex-col items-center ${loading ? 'mt-20' : 'm-0'}`}>
           {loading && <l-grid size="96" speed="1.5" color="white" />}
           <p>
@@ -136,34 +147,22 @@ const App = () => {
         </div>
         {recentReleases.length === 0 && getToken() && searched ? (
           <p className='text-center text-3xl'>No recent releases found.</p>
-        ) : (
-          <div className='flex flex-col items-center md:w-3/4 w-full'>
-            {recentReleases.map(release => (
-              <div key={release.id} className='flex gap-4 md:w-3/4 w-4/5 p-4 m-4 border border-[#f0f8ff] rounded-lg bg-[#191414] h-32 overflow-hidden'>
-                <img src={release.images[0].url} alt={release.name} className='md:w-24 rounded-md' />
-                <div className='flex flex-col w-full'>
-                  <p className='capitalize'>{release.album_type}</p>
-
-                  <a href={release.external_urls.spotify} rel="noopener noreferrer" target='_blank'
-                    className='hover:text-[#1DB954] text-ellipsis overflow-hidden w-full'
-                  >
-                    {release.name}
-                  </a>
-
-                  <a href={release.artists[0].external_urls.spotify} rel="noopener noreferrer" target='_blank'
-                    className='hover:text-[#1DB954]'
-                  >
-                    {release.artists[0].name}
-                  </a>
-                  <p>{release.release_date}</p>
-                </div>
+          ) : ( 
+            isGrid ? 
+            (
+              recentReleases.length === 0 ? null : <Grid data={recentReleases} className='w-full h-svh mt-20' />
+            ) : (
+              <div className='flex flex-col items-center md:w-3/4 w-full mt-20'>
+              {recentReleases.map((data, index) => (
+                <Card data={data} key={index}/>
+              ))}
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+            )
+          )
+        }
+      </main>
 
-      <div className='flex flex-col w-full h-fit bg-[#191414] border-t border-t-[#393939] shadow-xl overflow-hidden p-4 pt-8'>
+      <footer className='flex flex-col w-full bg-[#191414] border-t border-t-[#393939] shadow-xl overflow-hidden p-4 pt-8'>
         <div className='flex'>
           <div>
             <p className='text-sm'>Created by <a href="https://github.com/Pyromagne" className='font-semibold hover:text-[#1DB954]'>Pyromagne</a></p>
@@ -174,8 +173,7 @@ const App = () => {
             <p className='text-sm'>&copy;  {year} whatsnewfeed - All Rights Reserved.</p>
           </div>
         </div>
-      </div>
-
+      </footer>
     </div>
   );
 };
