@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /* * {
   outline: 1px solid rgba(255, 255, 255, 0.5);
@@ -29,7 +27,6 @@ html, body, #root, .App {
 }
 
 * {
-  color: #f0f8ff;
   font-family: cabin;
 }
 

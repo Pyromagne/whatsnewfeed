@@ -1,3 +1,3 @@
 # whatsnewfeed
 
-![logo](./public/android-chrome-192x192.png)
+![logo](/android-chrome-192x192.png)

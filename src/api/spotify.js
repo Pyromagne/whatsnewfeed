@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
-const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI;
-const SCOPES = process.env.REACT_APP_SCOPES;
+const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
+const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
+const SCOPES = import.meta.env.VITE_SCOPES;
 
 let accessToken = null;
 

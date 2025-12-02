@@ -98,11 +98,11 @@ const App = () => {
   };
   
   return (
-    <div className='w-full flex flex-col'>
+    <div className='w-full flex flex-col text-[#f0f8ff]'>
 
-      <div className={`relative w-full h-[256px] bg-[#1DB954] flex justify-center shadow-xl`}>
+      <div className={`relative w-full h-64 bg-[#1DB954] flex justify-center shadow-xl`}>
         <div className='p-2'>
-          <p className='libre-baskerville font-bold md:text-7xl text-[38px] text-center text-[#191414] h-fit md:mt-20 mt-16'>whats<span className='libre-baskerville'>new</span>feed</p>
+          <p className='libre-baskerville font-bold md:text-7xl text-[38px] text-center text-[#191414] h-fit md:mt-20 mt-16'>whats<span className='libre-baskerville text-[#f0f8ff]'>new</span>feed</p>
           <p className='text-center md:text-lg text-sm text-wrap'>View your latest releases from artists you followed in spotify with a larger cap.</p>
         </div>
 
@@ -165,11 +165,11 @@ const App = () => {
       <footer className='flex flex-col w-full bg-[#191414] border-t border-t-[#393939] shadow-xl overflow-hidden p-4 pt-8'>
         <div className='flex'>
           <div>
-            <p className='text-sm'>Created by <a href="https://github.com/Pyromagne" className='font-semibold hover:text-[#1DB954]'>Pyromagne</a></p>
-            <a href="https://github.com/Pyromagne/whatsnewfeed" className='font-semibold text-sm hover:text-[#1DB954]'>Source Code</a>
+            <p className='text-sm'>Created by <a target="_blank" rel="noopener noreferrer" href="https://github.com/Pyromagne" className='font-semibold hover:text-[#1DB954]'>Pyromagne</a></p>
+            <a target="_blank" rel="noopener noreferrer" href="https://github.com/Pyromagne/whatsnewfeed" className='font-semibold text-sm hover:text-[#1DB954]'>Source Code</a>
           </div>
           <div className='ml-auto flex flex-col items-end'>
-            <p className='text-sm'>Powered by the <a href="https://developer.spotify.com/" className='text-[#1DB954]'>Spotify API</a>, served by <a href="https://render.com/" className='text-[#1DB954]'>Render</a></p>
+            <p className='text-sm'>Powered by the <a target="_blank" rel="noopener noreferrer" href="https://developer.spotify.com/" className='text-[#1DB954]'>Spotify API</a>, served by <a target="_blank" rel="noopener noreferrer" href="https://vercel.com/" className='text-[#1DB954]'>Vercel</a></p>
             <p className='text-sm'>&copy;  {year} whatsnewfeed - All Rights Reserved.</p>
           </div>
         </div>
